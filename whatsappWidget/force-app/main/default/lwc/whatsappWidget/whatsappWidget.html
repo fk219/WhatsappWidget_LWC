@@ -1,0 +1,130 @@
+<template>
+    <!-- Chat toggle button, visible when chat is closed -->
+    <div class="chat-toggle" onclick={toggleChat} if:false={isChatOpen}>
+        <!-- Container for the WhatsApp icon -->
+        <div class="whatsapp-icon">
+            <!-- WhatsApp SVG icon from provided code -->
+            <svg viewBox="0 0 32 32" class="whatsapp-ico">
+                <path d=" M19.11 17.205c-.372 0-1.088 1.39-1.518 1.39a.63.63 0 0 1-.315-.1c-.802-.402-1.504-.817-2.163-1.447-.545-.516-1.146-1.29-1.46-1.963a.426.426 0 0 1-.073-.215c0-.33.99-.945.99-1.49 0-.143-.73-2.09-.832-2.335-.143-.372-.214-.487-.6-.487-.187 0-.36-.043-.53-.043-.302 0-.53.115-.746.315-.688.645-1.032 1.318-1.06 2.264v.114c-.015.99.472 1.977 1.017 2.78 1.23 1.82 2.506 3.41 4.554 4.34.616.287 2.035.888 2.722.888.817 0 2.15-.515 2.478-1.318.13-.33.244-.73.244-1.088 0-.058 0-.144-.03-.215-.1-.172-2.434-1.39-2.678-1.39zm-2.908 7.593c-1.747 0-3.48-.53-4.942-1.49L7.793 24.41l1.132-3.337a8.955 8.955 0 0 1-1.72-5.272c0-4.955 4.04-8.995 8.997-8.995S25.2 10.845 25.2 15.8c0 4.958-4.04 8.998-8.998 8.998zm0-19.798c-5.96 0-10.8 4.842-10.8 10.8 0 1.964.53 3.898 1.546 5.574L5 27.176l5.974-1.92a10.807 10.807 0 0 0 16.03-9.455c0-5.958-4.842-10.8-10.802-10.8z" fill-rule="evenodd"></path>
+            </svg>
+        </div>
+        <!-- Badge showing unread message count, visible if hasUnreadMessages is true -->
+        <div class="chat-badge" if:true={hasUnreadMessages}>
+            <span>{unreadCount}</span>
+        </div>
+    </div>
+
+    <!-- Chat window, visible when isChatOpen is true -->
+    <template if:true={isChatOpen}>
+        <div class="chat-window">
+            <!-- Chat header with contact info and actions -->
+            <div class="chat-header">
+                <div class="contact-info">
+                    <!-- Avatar displaying contact initials -->
+                    <div class="contact-avatar">
+                        <span class="avatar-initials">{contactInitials}</span>
+                    </div>
+                    <div class="contact-details">
+                        <!-- Display contact name -->
+                        <div class="contact-name">{contactName}</div>
+                    </div>
+                </div>
+                <div class="header-actions">
+                    <!-- Refresh button to reload chat history -->
+                    <button class="action-btn refresh-btn" onclick={handleRefresh} title="Refresh chat" disabled={isLoading}>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/>
+                        </svg>
+                    </button>
+                    <!-- Close button to toggle chat -->
+                    <button class="action-btn" onclick={toggleChat} title="Close" disabled={isLoading}>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Container for messages with scroll event handling -->
+            <div class="chat-messages-container" onscroll={handleScroll}>
+                <!-- Manual DOM manipulation area for rendering messages -->
+                <div class="chat-messages" lwc:dom="manual"></div>
+                <!-- No messages placeholder, shown if showNoMessages is true -->
+                <template if:true={showNoMessages}>
+                    <div class="no-messages">
+                        <div class="no-messages-icon">💬</div>
+                        <p>No messages here yet...</p>
+                        <p>Send a message to start the conversation.</p>
+                    </div>
+                </template>
+            </div>
+
+            <!-- Input area for chat interactions -->
+            <div class="chat-input-area">
+                <!-- Start conversation button, shown if showStartConversationButton is true -->
+                <template if:true={showStartConversationButton}>
+                    <div class="start-conversation-container">
+                        <button class="start-conversation-btn" onclick={handleStartConversation} disabled={isLoading}>
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M2 17h20v2H2zm1.15-4.05L4 11.47l.85 1.48L12 17l7.15-4.05L20 11.47 18.85 12.95 12 16.88 5.15 12.95zm0-6L4 5.47l.85 1.48L12 11l7.15-4.05L20 5.47 18.85 6.95 12 10.88 5.15 6.95z"/>
+                            </svg>
+                            <span>Start Conversation</span>
+                        </button>
+                    </div>
+                </template>
+
+                <!-- Input row, shown if showStartConversationButton is false -->
+                <template if:false={showStartConversationButton}>
+                    <!-- Media input section, shown if showMediaInput is true -->
+                    <template if:true={showMediaInput}>
+                        <div class="media-input-container">
+                            <!-- File input for media upload, accepts images and videos -->
+                            <input type="file" 
+                                   class="media-input" 
+                                   accept="image/*,video/*"
+                                   onchange={handleMediaFileChange} />
+                            <!-- Close button to hide media input -->
+                            <button class="media-close-btn" onclick={hideMediaInput}>
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </template>
+
+                    <!-- Main input row with actions and message input -->
+                    <div class="input-row">
+                        <div class="input-actions">
+                            <!-- Button to toggle media input -->
+                            <button class="action-btn attach-btn" onclick={toggleMediaInput} title="Attach media" disabled={isLoading}>
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M16.5 6v11.5c0 2.21-1.79 4-4 4s-4-1.79-4-4V5c0-1.38 1.12-2.5 2.5-2.5s2.5 1.12 2.5 2.5v10.5c0 .55-.45 1-1 1s-1-.45-1-1V6H10v9.5c0 1.38 1.12 2.5 2.5 2.5s2.5-1.12 2.5-2.5V5c0-2.21-1.79-4-4-4S7 2.79 7 5v12.5c0 3.04 2.46 5.5 5.5 5.5s5.5-2.46 5.5-5.5V6h-1.5z"/>
+                                </svg>
+                            </button>
+                        </div>
+                        
+                        <div class="message-input-container">
+                            <!-- Textarea for message input, reactive with currentMessage -->
+                            <textarea class="message-input" 
+                                      placeholder="Type a message"
+                                      value={currentMessage}
+                                      oninput={handleMessageChange}
+                                      onkeyup={handleKeyUp}
+                                      rows="1"></textarea>
+                        </div>
+                        
+                        <!-- Send button, disabled if no content or loading -->
+                        <button class="send-btn" 
+                                onclick={handleSendMessage} 
+                                disabled={isSendButtonDisabledComputed}
+                                title="Send">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+                            </svg>
+                        </button>
+                    </div>
+                </template>
+            </div>
+        </div>
+    </template>
+</template>
