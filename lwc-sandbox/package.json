@@ -1,0 +1,22 @@
+{
+  "name": "lwc-sandbox",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "@lwc/rollup-plugin": "^9.1.3",
+    "@rollup/plugin-alias": "^6.0.0",
+    "@rollup/plugin-node-resolve": "^16.0.3",
+    "@rollup/plugin-replace": "^6.0.3",
+    "lwc": "^9.1.3",
+    "rollup": "^4.60.1",
+    "serve": "^14.2.6"
+  }
+}
