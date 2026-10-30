@@ -1,0 +1,75 @@
+<template>
+  <lightning-card
+    title="WhatsApp Integration Setup"
+    icon-name="custom:custom19"
+  >
+    <div class="slds-p-around_medium">
+      <lightning-radio-group
+        name="providerGroup"
+        options={providerOptions}
+        value={selectedProvider}
+        type="button"
+        onchange={handleProviderChange}
+      >
+      </lightning-radio-group>
+
+      <div class="slds-m-top_medium">
+        <template if:true={isTwilio}>
+          <lightning-input
+            data-key="twilioSid"
+            label="Twilio Account SID"
+            value={twilioSid}
+            onchange={handleInputChange}
+          >
+          </lightning-input>
+          <lightning-input
+            data-key="twilioToken"
+            label="Twilio Auth Token"
+            type="password"
+            value={twilioToken}
+            onchange={handleInputChange}
+          >
+          </lightning-input>
+        </template>
+
+        <template if:true={isMeta}>
+          <lightning-input
+            data-key="metaAppId"
+            label="Meta App ID"
+            value={metaAppId}
+            onchange={handleInputChange}
+          >
+          </lightning-input>
+          <lightning-input
+            data-key="metaToken"
+            label="Meta Access Token"
+            type="password"
+            value={metaToken}
+            onchange={handleInputChange}
+          >
+          </lightning-input>
+          <lightning-input
+            data-key="metaPhoneId"
+            label="Phone Number ID"
+            value={metaPhoneId}
+            onchange={handleInputChange}
+          >
+          </lightning-input>
+        </template>
+
+        <lightning-input
+          data-key="businessNumber"
+          label="Business Phone Number"
+          value={businessNumber}
+          onchange={handleInputChange}
+        >
+        </lightning-input>
+      </div>
+
+      <div class="slds-m-top_large">
+        <lightning-button variant="brand" label="Save" onclick={handleSave}>
+        </lightning-button>
+      </div>
+    </div>
+  </lightning-card>
+</template>

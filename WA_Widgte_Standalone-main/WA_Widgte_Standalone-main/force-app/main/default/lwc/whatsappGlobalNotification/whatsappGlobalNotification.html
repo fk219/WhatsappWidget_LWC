@@ -1,0 +1,32 @@
+<template>
+  <div class="notification-container">
+    <template if:true={hasNotifications}>
+      <div class="notification-list">
+        <template for:each={notifications} for:item="notif">
+          <div
+            key={notif.id}
+            class="notification-item"
+            data-id={notif.recordId}
+            onclick={handleNotificationClick}
+          >
+            <div class="notif-icon">
+              <lightning-icon
+                icon-name="utility:chat"
+                size="small"
+              ></lightning-icon>
+            </div>
+            <div class="notif-content">
+              <div class="notif-title">New WhatsApp Message</div>
+              <div class="notif-time">{notif.time}</div>
+            </div>
+          </div>
+        </template>
+      </div>
+    </template>
+    <template if:false={hasNotifications}>
+      <div class="empty-state">
+        <p>No new messages.</p>
+      </div>
+    </template>
+  </div>
+</template>

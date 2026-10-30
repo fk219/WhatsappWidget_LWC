@@ -1,0 +1,57 @@
+<template>
+    <div class="inbox-container">
+        <!-- Left Pane: Conversation List -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h2>Chats</h2>
+            </div>
+            <div class="conversation-list">
+                <template if:true={isLoading}>
+                    <lightning-spinner alternative-text="Loading" size="small"></lightning-spinner>
+                </template>
+                <template if:true={conversations}>
+                    <template for:each={conversations} for:item="conv">
+                        <div key={conv.recordId} 
+                             class={getConversationClass(conv.recordId)} 
+                             data-id={conv.recordId} 
+                             data-object={conv.objectApiName}
+                             onclick={handleConversationSelect}>
+                            <div class="avatar">
+                                <lightning-icon icon-name="standard:user" size="medium"></lightning-icon>
+                            </div>
+                            <div class="conv-details">
+                                <div class="conv-top-row">
+                                    <span class="conv-name">{conv.name}</span>
+                                    <span class="conv-time">{conv.lastMessageTime}</span>
+                                </div>
+                                <div class="conv-bottom-row">
+                                    <span class="conv-preview">{conv.objectApiName}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                </template>
+            </div>
+        </div>
+
+        <!-- Right Pane: Chat Interface -->
+        <div class="main-chat-area">
+            <template if:true={selectedRecordId}>
+                <!-- We embed the existing widget component but tell it to expand to full size -->
+                <c-whatsapp-chat-widget 
+                    record-id={selectedRecordId} 
+                    object-api-name={selectedObjectApiName}>
+                </c-whatsapp-chat-widget>
+            </template>
+            <template if:false={selectedRecordId}>
+                <div class="empty-chat-state">
+                    <div class="empty-content">
+                        <lightning-icon icon-name="utility:chat" size="large"></lightning-icon>
+                        <h1>WhatsApp for Salesforce</h1>
+                        <p>Select a conversation from the left menu to start messaging.</p>
+                    </div>
+                </div>
+            </template>
+        </div>
+    </div>
+</template>

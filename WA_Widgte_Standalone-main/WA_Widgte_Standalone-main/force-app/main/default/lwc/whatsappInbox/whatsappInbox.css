@@ -1,0 +1,105 @@
+.inbox-container {
+    display: flex;
+    height: calc(100vh - 120px);
+    min-height: 600px;
+    background: #fff;
+    border: 1px solid #d8dde6;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 350px;
+    border-right: 1px solid #d8dde6;
+    display: flex;
+    flex-direction: column;
+    background: #f8f9f9;
+}
+.sidebar-header {
+    padding: 16px;
+    background: #f3f3f3;
+    border-bottom: 1px solid #d8dde6;
+}
+.sidebar-header h2 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+}
+.conversation-list {
+    flex: 1;
+    overflow-y: auto;
+    position: relative;
+}
+.conversation-item {
+    display: flex;
+    padding: 12px 16px;
+    cursor: pointer;
+    border-bottom: 1px solid #eef1f6;
+    transition: background-color 0.2s;
+}
+.conversation-item:hover {
+    background: #fff;
+}
+.conversation-item.active {
+    background: #e5f2fb;
+}
+.avatar {
+    margin-right: 12px;
+}
+.conv-details {
+    flex: 1;
+    overflow: hidden;
+}
+.conv-top-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 4px;
+}
+.conv-name {
+    font-weight: 600;
+    font-size: 14px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.conv-time {
+    font-size: 12px;
+    color: #706e6b;
+}
+.conv-bottom-row {
+    display: flex;
+    justify-content: space-between;
+}
+.conv-preview {
+    font-size: 13px;
+    color: #706e6b;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Main Chat Area */
+.main-chat-area {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background: #e5ddd5; /* WhatsApp-ish background */
+}
+.empty-chat-state {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f8f9fa;
+}
+.empty-content {
+    text-align: center;
+    color: #706e6b;
+}
+.empty-content h1 {
+    font-size: 24px;
+    font-weight: 300;
+    margin: 16px 0 8px;
+    color: #3e3e3c;
+}
