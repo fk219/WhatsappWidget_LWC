@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomPermission xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description
+  >Send WhatsApp messages in bulk or via scheduled campaigns.</description>
+    <isLicensed>false</isLicensed>
+    <label>WhatsApp Bulk Send</label>
+</CustomPermission>

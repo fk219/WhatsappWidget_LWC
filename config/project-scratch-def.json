@@ -1,0 +1,19 @@
+{
+  "orgName": "WhatsApp for Salesforce Dev",
+  "edition": "Developer",
+  "features": [
+    "EnableSetPasswordInApi",
+    "ServiceCloud",
+    "Sites",
+    "PlatformEvents",
+    "Communities"
+  ],
+  "settings": {
+    "lightningExperienceSettings": {
+      "enableS1DesktopEnabled": true
+    },
+    "mobileSettings": {
+      "enableS1EncryptedStoragePref2": false
+    }
+  }
+}

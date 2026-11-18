@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomLabels xmlns="http://soap.sforce.com/2006/04/metadata">
+    <labels>
+        <fullName>WhatsApp_Product_Name</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Product name shown in the UI</shortDescription>
+        <value>WhatsApp for Salesforce</value>
+    </labels>
+    <labels>
+        <fullName>WhatsApp_No_Messages</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Empty chat state</shortDescription>
+        <value>No messages yet. Start the conversation.</value>
+    </labels>
+    <labels>
+        <fullName>WhatsApp_Window_Closed</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>24-hour window closed notice</shortDescription>
+        <value
+    >The 24-hour customer service window is closed. Send an approved template to re-engage.</value>
+    </labels>
+    <labels>
+        <fullName>WhatsApp_Opt_Out_Blocked</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Opt-out block notice</shortDescription>
+        <value
+    >This customer has opted out of WhatsApp messages. Outbound messages are blocked.</value>
+    </labels>
+    <labels>
+        <fullName>WhatsApp_Send</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Send button label</shortDescription>
+        <value>Send</value>
+    </labels>
+    <labels>
+        <fullName>WhatsApp_Attach</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Attach button label</shortDescription>
+        <value>Attach</value>
+    </labels>
+    <labels>
+        <fullName>WhatsApp_Template</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Template button label</shortDescription>
+        <value>Template</value>
+    </labels>
+    <labels>
+        <fullName>WhatsApp_Refresh</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Refresh button label</shortDescription>
+        <value>Refresh</value>
+    </labels>
+</CustomLabels>
