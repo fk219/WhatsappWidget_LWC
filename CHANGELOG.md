@@ -17,6 +17,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `WhatsApp_Settings__c` protected hierarchy custom setting (non-secret initial fields).
 - `WhatsApp_Credential__c` private credential object (Long Text Area) for Meta tokens/secrets, because Custom Settings are limited to 255 characters.
 - `WhatsApp_Event__e` platform event for real-time UI.
+- Core data model: profile, conversation, message, status, media, template, consent, mapping, routing rule, webhook event, API log, outbound queue, usage, conversation member.
+- Apex integration layer: Graph client, webhook verification/staging, async processor, phone matcher, outbound text service, chat controller, permission sets, tests.
+- `whatsappChat` LWC with SLDS styling, 24h window, consent badge, status ticks, Platform Events, and Jest tests.
 - Remote Site Settings for Meta Graph API and media CDN.
 
 ### Changed

@@ -25,6 +25,7 @@ A Salesforce package that lets teams:
 | ---------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
 | [`docs/ENTERPRISE_ANALYSIS.md`](docs/ENTERPRISE_ANALYSIS.md)                 | Current-state audit, target architecture, data model, WABA capability matrix, security, packaging, roadmap, tooling |
 | [`docs/DECISIONS.md`](docs/DECISIONS.md)                                     | Recorded scope decisions and their implications                                                                     |
+| [`docs/IMPLEMENTATION_STATUS.md`](docs/IMPLEMENTATION_STATUS.md)             | What is built, what is next, and current validation status                                                          |
 | [`docs/CONFIGURATION_MODEL.md`](docs/CONFIGURATION_MODEL.md)                 | Setup app, object/field mapping, routing rules, business logic, no auto-send                                        |
 | [`docs/PARTNER_APPLICATION_GUIDE.md`](docs/PARTNER_APPLICATION_GUIDE.md)     | Salesforce ISV, Meta Tech Provider, Solution Partner/credit line as a solo developer                                |
 | [`docs/SCOPE_QUESTIONNAIRE.md`](docs/SCOPE_QUESTIONNAIRE.md)                 | 120-question scope questionnaire                                                                                    |

@@ -1,0 +1,192 @@
+<template>
+  <template lwc:if={isOpen}>
+    <section class="chat-window" aria-label="WhatsApp conversation">
+      <header class="chat-header">
+        <div class="avatar" aria-hidden="true">WA</div>
+        <div class="identity">
+          <div class="record-name">{recordName}</div>
+          <div class="window-label">
+            <span class={windowDotClass}></span>
+            {windowLabel}
+          </div>
+        </div>
+        <div class="header-actions">
+          <span class={consentClass}>{consentStatus}</span>
+          <button
+            class="icon-button light"
+            type="button"
+            onclick={handleRefresh}
+            aria-label="Refresh conversation"
+          >
+            <lightning-icon
+              icon-name="utility:refresh"
+              size="x-small"
+            ></lightning-icon>
+          </button>
+          <button
+            class="icon-button light"
+            type="button"
+            onclick={toggleChat}
+            aria-label="Close WhatsApp chat"
+          >
+            <lightning-icon
+              icon-name="utility:close"
+              size="x-small"
+            ></lightning-icon>
+          </button>
+        </div>
+      </header>
+
+      <template lwc:if={errorMessage}>
+        <div class="error-banner" role="alert">{errorMessage}</div>
+      </template>
+
+      <div
+        class="chat-messages-container"
+        role="log"
+        aria-live="polite"
+        aria-relevant="additions"
+      >
+        <template lwc:if={isLoading}>
+          <div class="loading-state">
+            <lightning-spinner
+              alternative-text="Loading conversation"
+              size="small"
+            ></lightning-spinner>
+          </div>
+        </template>
+
+        <template lwc:if={showEmptyState}>
+          <div class="empty-state">
+            <lightning-icon
+              icon-name="utility:chat"
+              size="large"
+            ></lightning-icon>
+            <p>No messages yet.</p>
+            <span>Messages sent from Salesforce appear here.</span>
+          </div>
+        </template>
+
+        <template for:each={messages} for:item="message">
+          <div key={message.Id} class="message-group">
+            <template lwc:if={message.showDateSeparator}>
+              <div class="date-separator">
+                <span>{message.dateLabel}</span>
+              </div>
+            </template>
+            <div class={message.bubbleClass}>
+              <div class={message.contentClass}>
+                <div class="sender">{message.senderLabel}</div>
+
+                <template lwc:if={message.isSystem}>
+                  <div class="system-text">{message.Body__c}</div>
+                </template>
+                <template lwc:else>
+                  <template lwc:if={message.isMedia}>
+                    <div class="media-card">
+                      <lightning-icon
+                        icon-name={message.mediaIcon}
+                        size="small"
+                      ></lightning-icon>
+                      <span>{message.typeLabel}</span>
+                    </div>
+                    <template lwc:if={message.Caption__c}>
+                      <lightning-formatted-text
+                        value={message.Caption__c}
+                      ></lightning-formatted-text>
+                    </template>
+                  </template>
+                  <template lwc:else>
+                    <template lwc:if={message.Body__c}>
+                      <lightning-formatted-text
+                        value={message.Body__c}
+                      ></lightning-formatted-text>
+                    </template>
+                    <template lwc:else>
+                      <span class="muted">{message.typeLabel}</span>
+                    </template>
+                  </template>
+                </template>
+
+                <template lwc:if={message.hasError}>
+                  <div class="message-error">{message.Error_Message__c}</div>
+                </template>
+
+                <div class="meta">
+                  <span>{message.timeLabel}</span>
+                  <template lwc:if={message.isOutbound}>
+                    <span class={message.statusClass} title={message.Status__c}
+                      >{message.statusLabel}</span
+                    >
+                  </template>
+                </div>
+              </div>
+            </div>
+          </div>
+        </template>
+      </div>
+
+      <footer class="composer">
+        <template lwc:if={isOptedOut}>
+          <div class="composer-warning">
+            This customer opted out. Outbound messages are blocked.
+          </div>
+        </template>
+        <template lwc:elseif={isWindowClosed}>
+          <div class="composer-warning">
+            The 24-hour customer service window is closed. Send an approved
+            template to re-engage.
+          </div>
+        </template>
+
+        <div class="composer-row">
+          <button
+            class="icon-button"
+            type="button"
+            disabled
+            title="Attachments coming soon"
+            aria-label="Attach a file"
+          >
+            <lightning-icon
+              icon-name="utility:attach"
+              size="x-small"
+            ></lightning-icon>
+          </button>
+          <textarea
+            class="message-input"
+            rows="1"
+            placeholder={placeholder}
+            oninput={handleInput}
+            onkeyup={handleKeyUp}
+            disabled={isComposerDisabled}
+            aria-label="Message"
+          ></textarea>
+          <button
+            class="send-button"
+            type="button"
+            onclick={handleSend}
+            disabled={isSendDisabled}
+            aria-label="Send message"
+          >
+            <lightning-icon
+              icon-name="utility:send"
+              size="x-small"
+            ></lightning-icon>
+          </button>
+        </div>
+      </footer>
+    </section>
+  </template>
+
+  <template lwc:else>
+    <button
+      class="launcher"
+      type="button"
+      onclick={toggleChat}
+      aria-label="Open WhatsApp chat"
+    >
+      <span class="launcher-icon" aria-hidden="true">WA</span>
+      <span class="launcher-label">WhatsApp</span>
+    </button>
+  </template>
+</template>
