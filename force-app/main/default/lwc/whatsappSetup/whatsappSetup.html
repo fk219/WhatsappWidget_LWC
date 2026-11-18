@@ -1,0 +1,471 @@
+<template>
+  <div class="setup-shell">
+    <header class="setup-header">
+      <div>
+        <h1>WhatsApp for Salesforce</h1>
+        <p>
+          Connection, field mapping, routing rules, and diagnostics. Admin only.
+        </p>
+      </div>
+      <div class="header-right">
+        <span class={statusClass}>{statusLabel}</span>
+        <lightning-button
+          label="Refresh"
+          onclick={handleRefresh}
+        ></lightning-button>
+      </div>
+    </header>
+
+    <template lwc:if={isLoading}>
+      <div class="loading">
+        <lightning-spinner
+          alternative-text="Loading setup"
+          size="medium"
+        ></lightning-spinner>
+      </div>
+    </template>
+
+    <template lwc:if={errorMessage}>
+      <div class="error-banner" role="alert">{errorMessage}</div>
+    </template>
+
+    <lightning-tabset>
+      <lightning-tab label="Connection">
+        <lightning-card
+          title="Meta connection"
+          icon-name="utility:connected_apps"
+        >
+          <div class="details-grid">
+            <div class="detail">
+              <span class="detail-label">Credential</span>
+              <span>{setup.credentialLabel}</span>
+            </div>
+            <div class="detail">
+              <span class="detail-label">Provider</span>
+              <span>{setup.provider}</span>
+            </div>
+            <div class="detail">
+              <span class="detail-label">App ID</span>
+              <span>{setup.appId}</span>
+            </div>
+            <div class="detail">
+              <span class="detail-label">Phone number ID</span>
+              <span>{setup.phoneNumberId}</span>
+            </div>
+            <div class="detail">
+              <span class="detail-label">Messaging account ID</span>
+              <span>{setup.messagingAccountId}</span>
+            </div>
+            <div class="detail">
+              <span class="detail-label">Graph API version</span>
+              <span>{graphVersion}</span>
+            </div>
+            <div class="detail">
+              <span class="detail-label">Access token</span>
+              <span>{accessTokenMasked}</span>
+            </div>
+            <div class="detail">
+              <span class="detail-label">Verify token</span>
+              <span>{verifyTokenMasked}</span>
+            </div>
+          </div>
+
+          <template lwc:if={setup.tokenExpiry}>
+            <div class="detail single">
+              <span class="detail-label">Token expiry</span>
+              <lightning-formatted-date-time
+                value={setup.tokenExpiry}
+              ></lightning-formatted-date-time>
+            </div>
+          </template>
+
+          <template lwc:if={webhookUrl}>
+            <lightning-input
+              label="Webhook callback URL"
+              value={webhookUrl}
+              read-only
+            ></lightning-input>
+          </template>
+
+          <div class="hint">
+            <p>
+              Create an active Salesforce Site, grant the guest profile Apex
+              access to
+              <strong>WhatsAppWebhookResource</strong>, and give it create-only
+              access to <strong>WhatsApp Webhook Event</strong>. Paste this
+              callback URL and the verify token in the Meta App Dashboard, then
+              subscribe to the <strong>messages</strong> webhook field.
+            </p>
+            <p>
+              Credentials are stored in the private
+              <strong>WhatsApp Credential</strong> object, not in source or
+              Custom Metadata. Rotate tokens from the connection record; values
+              are masked here.
+            </p>
+          </div>
+
+          <div class="counts">
+            <div class="count">
+              <span>{setup.accountCount}</span><label>Accounts</label>
+            </div>
+            <div class="count">
+              <span>{setup.conversationCount}</span><label>Conversations</label>
+            </div>
+            <div class="count">
+              <span>{setup.messageCount}</span><label>Messages</label>
+            </div>
+            <div class="count">
+              <span>{setup.templateCount}</span><label>Templates</label>
+            </div>
+          </div>
+        </lightning-card>
+      </lightning-tab>
+
+      <lightning-tab label="Object Mappings">
+        <template lwc:if={mappingForm}>
+          <lightning-card title={mappingTitle} icon-name="utility:map">
+            <div class="form-grid">
+              <lightning-input
+                data-field="Name"
+                label="Mapping name"
+                value={mappingForm.Name}
+                onchange={handleMappingFieldChange}
+              ></lightning-input>
+              <lightning-combobox
+                data-field="Object_API_Name__c"
+                label="Object"
+                value={mappingForm.Object_API_Name__c}
+                options={objectOptions}
+                onchange={handleMappingObjectChange}
+              ></lightning-combobox>
+              <lightning-combobox
+                data-field="Phone_Field__c"
+                label="Phone field"
+                value={mappingForm.Phone_Field__c}
+                options={fieldOptions}
+                onchange={handleMappingFieldChange}
+              ></lightning-combobox>
+              <lightning-combobox
+                data-field="Country_Code_Field__c"
+                label="Country code field (optional)"
+                value={mappingForm.Country_Code_Field__c}
+                options={fieldOptions}
+                onchange={handleMappingFieldChange}
+              ></lightning-combobox>
+              <lightning-combobox
+                data-field="Name_Field__c"
+                label="Record name field (optional)"
+                value={mappingForm.Name_Field__c}
+                options={fieldOptions}
+                onchange={handleMappingFieldChange}
+              ></lightning-combobox>
+              <lightning-input
+                data-field="Priority__c"
+                type="number"
+                label="Priority"
+                value={mappingForm.Priority__c}
+                onchange={handleMappingFieldChange}
+              ></lightning-input>
+              <lightning-input
+                data-field="Is_Active__c"
+                type="checkbox"
+                label="Active"
+                checked={mappingForm.Is_Active__c}
+                onchange={handleMappingFieldChange}
+              ></lightning-input>
+              <lightning-input
+                data-field="Create_If_Missing__c"
+                type="checkbox"
+                label="Create a record if no match"
+                checked={mappingForm.Create_If_Missing__c}
+                onchange={handleMappingFieldChange}
+              ></lightning-input>
+              <lightning-input
+                data-field="Create_Object__c"
+                label="Create object API name (e.g. Lead)"
+                value={mappingForm.Create_Object__c}
+                onchange={handleMappingFieldChange}
+              ></lightning-input>
+              <lightning-combobox
+                data-field="Duplicate_Behavior__c"
+                label="Duplicate behavior"
+                value={mappingForm.Duplicate_Behavior__c}
+                options={duplicateBehaviorOptions}
+                onchange={handleMappingFieldChange}
+              ></lightning-combobox>
+            </div>
+            <div class="form-actions">
+              <lightning-button
+                label="Cancel"
+                onclick={handleCancelMapping}
+              ></lightning-button>
+              <lightning-button
+                label="Save mapping"
+                variant="brand"
+                onclick={handleSaveMapping}
+                disabled={isSaving}
+              ></lightning-button>
+            </div>
+          </lightning-card>
+        </template>
+
+        <template lwc:else>
+          <lightning-card title="Object mappings" icon-name="utility:map">
+            <div class="toolbar">
+              <p class="muted">
+                Map any object's phone field to WhatsApp. Multiple mappings per
+                object are allowed; lower priority wins.
+              </p>
+              <lightning-button
+                label="New mapping"
+                variant="brand"
+                onclick={handleNewMapping}
+              ></lightning-button>
+            </div>
+
+            <template lwc:if={hasMappings}>
+              <div class="list">
+                <template for:each={mappingRows} for:item="mapping">
+                  <div key={mapping.Id} class="list-item">
+                    <div class="list-main">
+                      <div class="list-title">{mapping.Name}</div>
+                      <div class="list-sub">
+                        {mapping.Object_API_Name__c} · {mapping.Phone_Field__c}
+                        · priority {mapping.Priority__c}
+                      </div>
+                    </div>
+                    <div class="list-actions">
+                      <span class="pill">{mapping.activeLabel}</span>
+                      <lightning-button-icon
+                        icon-name="utility:edit"
+                        alternative-text="Edit mapping"
+                        title="Edit mapping"
+                        data-id={mapping.Id}
+                        onclick={handleEditMapping}
+                      ></lightning-button-icon>
+                      <lightning-button-icon
+                        icon-name="utility:delete"
+                        alternative-text="Delete mapping"
+                        title="Delete mapping"
+                        data-id={mapping.Id}
+                        onclick={handleDeleteMapping}
+                      ></lightning-button-icon>
+                    </div>
+                  </div>
+                </template>
+              </div>
+            </template>
+            <template lwc:else>
+              <div class="empty">
+                No mappings yet. Add one to resolve records by phone.
+              </div>
+            </template>
+          </lightning-card>
+        </template>
+      </lightning-tab>
+
+      <lightning-tab label="Routing Rules">
+        <template lwc:if={ruleForm}>
+          <lightning-card title={ruleTitle} icon-name="utility:rules">
+            <div class="form-grid">
+              <lightning-input
+                data-field="Name"
+                label="Rule name"
+                value={ruleForm.Name}
+                onchange={handleRuleFieldChange}
+              ></lightning-input>
+              <lightning-input
+                data-field="Description__c"
+                label="Description"
+                value={ruleForm.Description__c}
+                onchange={handleRuleFieldChange}
+              ></lightning-input>
+              <lightning-combobox
+                data-field="Object_API_Name__c"
+                label="Scope object (optional)"
+                value={ruleForm.Object_API_Name__c}
+                options={objectOptions}
+                onchange={handleRuleFieldChange}
+              ></lightning-combobox>
+              <lightning-combobox
+                data-field="Match_Type__c"
+                label="Match type"
+                value={ruleForm.Match_Type__c}
+                options={matchTypeOptions}
+                onchange={handleRuleFieldChange}
+              ></lightning-combobox>
+              <lightning-input
+                data-field="Priority__c"
+                type="number"
+                label="Priority"
+                value={ruleForm.Priority__c}
+                onchange={handleRuleFieldChange}
+              ></lightning-input>
+              <lightning-input
+                data-field="Is_Active__c"
+                type="checkbox"
+                label="Active"
+                checked={ruleForm.Is_Active__c}
+                onchange={handleRuleFieldChange}
+              ></lightning-input>
+              <lightning-input
+                data-field="Stop_On_Match__c"
+                type="checkbox"
+                label="Stop after this rule matches"
+                checked={ruleForm.Stop_On_Match__c}
+                onchange={handleRuleFieldChange}
+              ></lightning-input>
+            </div>
+
+            <lightning-textarea
+              data-field="Conditions_JSON__c"
+              label="Conditions JSON"
+              value={ruleForm.Conditions_JSON__c}
+              onchange={handleRuleFieldChange}
+            ></lightning-textarea>
+            <lightning-textarea
+              data-field="Actions_JSON__c"
+              label="Actions JSON"
+              value={ruleForm.Actions_JSON__c}
+              onchange={handleRuleFieldChange}
+            ></lightning-textarea>
+            <div class="hint">
+              Conditions and actions are JSON arrays. Actions are internal only
+              (create records, assign, notify). Automatic message sending is
+              blocked by the server.
+            </div>
+            <div class="form-actions">
+              <lightning-button
+                label="Cancel"
+                onclick={handleCancelRule}
+              ></lightning-button>
+              <lightning-button
+                label="Save rule"
+                variant="brand"
+                onclick={handleSaveRule}
+                disabled={isSaving}
+              ></lightning-button>
+            </div>
+          </lightning-card>
+        </template>
+
+        <template lwc:else>
+          <lightning-card title="Routing rules" icon-name="utility:rules">
+            <div class="toolbar">
+              <p class="muted">
+                Rules run after an inbound message is stored. They can create
+                records, assign, tag, notify, and set priority. They never send
+                a WhatsApp message.
+              </p>
+              <lightning-button
+                label="New rule"
+                variant="brand"
+                onclick={handleNewRule}
+              ></lightning-button>
+            </div>
+            <template lwc:if={hasRules}>
+              <div class="list">
+                <template for:each={ruleRows} for:item="rule">
+                  <div key={rule.Id} class="list-item">
+                    <div class="list-main">
+                      <div class="list-title">{rule.Name}</div>
+                      <div class="list-sub">
+                        {rule.Object_API_Name__c} · {rule.Match_Type__c} ·
+                        priority {rule.Priority__c}
+                      </div>
+                    </div>
+                    <div class="list-actions">
+                      <span class="pill">{rule.activeLabel}</span>
+                      <lightning-button-icon
+                        icon-name="utility:edit"
+                        alternative-text="Edit rule"
+                        title="Edit rule"
+                        data-id={rule.Id}
+                        onclick={handleEditRule}
+                      ></lightning-button-icon>
+                      <lightning-button-icon
+                        icon-name="utility:delete"
+                        alternative-text="Delete rule"
+                        title="Delete rule"
+                        data-id={rule.Id}
+                        onclick={handleDeleteRule}
+                      ></lightning-button-icon>
+                    </div>
+                  </div>
+                </template>
+              </div>
+            </template>
+            <template lwc:else>
+              <div class="empty">No routing rules yet.</div>
+            </template>
+          </lightning-card>
+        </template>
+      </lightning-tab>
+
+      <lightning-tab label="Diagnostics">
+        <lightning-card
+          title="Health and recent activity"
+          icon-name="utility:health_check"
+        >
+          <div class="toolbar">
+            <lightning-button
+              label="Refresh diagnostics"
+              onclick={handleRefreshDiagnostics}
+            ></lightning-button>
+          </div>
+          <div class="counts">
+            <div class="count">
+              <span>{diagnosticsQueueDepth}</span><label>Queue depth</label>
+            </div>
+            <div class="count">
+              <span>{diagnosticsFailedWebhooks}</span
+              ><label>Failed webhooks</label>
+            </div>
+            <div class="count">
+              <span>{diagnosticsFailedMessages}</span
+              ><label>Failed messages</label>
+            </div>
+          </div>
+
+          <h3>Recent webhook events</h3>
+          <div class="table">
+            <div class="table-row table-head">
+              <span>Type</span><span>Status</span><span>Received</span
+              ><span>Error</span>
+            </div>
+            <template for:each={diagnosticsWebhookEvents} for:item="event">
+              <div key={event.Id} class="table-row">
+                <span>{event.Event_Type__c}</span>
+                <span>{event.Status__c}</span>
+                <span>
+                  <template lwc:if={event.Received_At__c}>
+                    <lightning-formatted-date-time
+                      value={event.Received_At__c}
+                    ></lightning-formatted-date-time>
+                  </template>
+                </span>
+                <span class="error-text">{event.Error__c}</span>
+              </div>
+            </template>
+          </div>
+
+          <h3>Recent API calls</h3>
+          <div class="table">
+            <div class="table-row table-head">
+              <span>Operation</span><span>Status</span><span>Duration</span
+              ><span>Trace</span>
+            </div>
+            <template for:each={diagnosticsApiLogs} for:item="log">
+              <div key={log.Id} class="table-row">
+                <span>{log.Operation__c}</span>
+                <span>{log.Status_Code__c}</span>
+                <span>{log.Duration_Ms__c} ms</span>
+                <span>{log.FBTrace_Id__c}</span>
+              </div>
+            </template>
+          </div>
+        </lightning-card>
+      </lightning-tab>
+    </lightning-tabset>
+  </div>
+</template>

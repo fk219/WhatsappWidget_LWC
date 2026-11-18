@@ -56,6 +56,8 @@
 - `WhatsAppPhoneMatcher` — validated dynamic SOQL, E.164 fallback, auto-create Lead.
 - `WhatsAppOutboundService` + `WhatsAppOutboundQueueable` — text send, consent block, 24h window, queue, Graph callout, status update.
 - `WhatsAppChatController` — context, message load, send, access checks.
+- `WhatsAppAdminController` — setup state, object/field options, mapping CRUD, rule CRUD, diagnostics.
+- `WhatsAppInboxController` — conversation list/filters, claim/close, counts.
 - Tests:
   - `WhatsAppGraphClientTest`
   - `WhatsAppWebhookResourceTest`
@@ -67,13 +69,23 @@
 ### LWC
 
 - `whatsappChat` — SLDS-native, WhatsApp-inspired record chat:
-  - Launcher and responsive panel
+  - Launcher, responsive panel, and inline (inbox) variant
   - Record context, messages, date separators, status ticks
   - 24h window label, consent badge
   - Composer, Enter-to-send, refresh
   - empApi subscription to `WhatsApp_Event__e`
   - No `innerHTML`
   - Jest tests (launcher/open/empty state)
+- `whatsappSetup` — admin setup page:
+  - Connection status, masked credentials, webhook URL, counts
+  - Object/field mapping builder with object/phone/country/name pickers
+  - Routing rule list + JSON condition/action editor
+  - Diagnostics: webhook events, API calls, queue depth, failures
+- `whatsappInbox` — two-pane inbox:
+  - Mine/Unassigned/All filters, search, unread badges
+  - Claim/close, embedded inline chat
+  - empApi refresh
+  - Not-linked conversation state
 
 ### Validation run
 
@@ -85,8 +97,6 @@
 
 ## Not built yet
 
-- `whatsappSetup` admin UI (object/field mapping, routing rules, diagnostics).
-- `whatsappInbox` full-page inbox.
 - `whatsappUtilityBar` notifications.
 - Template sync/create/delete/send and template picker.
 - Media upload/download and Salesforce Files preview.

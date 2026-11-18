@@ -1,0 +1,168 @@
+<template>
+  <div class="inbox-shell">
+    <aside class="sidebar">
+      <header class="sidebar-header">
+        <div>
+          <h1>WhatsApp inbox</h1>
+          <p>
+            {mineCount} mine · {unassignedCount} unassigned · {unreadCount}
+            unread
+          </p>
+        </div>
+        <lightning-button-icon
+          icon-name="utility:refresh"
+          alternative-text="Refresh conversations"
+          title="Refresh conversations"
+          onclick={handleRefresh}
+        ></lightning-button-icon>
+      </header>
+
+      <div class="search-row">
+        <lightning-input
+          type="search"
+          label="Search conversations"
+          variant="label-hidden"
+          placeholder="Search name, phone, or message"
+          onchange={handleSearch}
+        ></lightning-input>
+      </div>
+
+      <div class="filter-row">
+        <lightning-button
+          label="Mine"
+          data-filter="mine"
+          variant={filterMineVariant}
+          onclick={handleFilter}
+        ></lightning-button>
+        <lightning-button
+          label="Unassigned"
+          data-filter="unassigned"
+          variant={filterUnassignedVariant}
+          onclick={handleFilter}
+        ></lightning-button>
+        <lightning-button
+          label="All"
+          data-filter="all"
+          variant={filterAllVariant}
+          onclick={handleFilter}
+        ></lightning-button>
+      </div>
+
+      <template lwc:if={errorMessage}>
+        <div class="error-banner" role="alert">{errorMessage}</div>
+      </template>
+
+      <div class="conversation-list">
+        <template lwc:if={isLoading}>
+          <div class="loading">
+            <lightning-spinner
+              alternative-text="Loading conversations"
+              size="small"
+            ></lightning-spinner>
+          </div>
+        </template>
+
+        <template lwc:if={hasConversations}>
+          <template for:each={filteredConversations} for:item="conversation">
+            <button
+              key={conversation.id}
+              class={conversation.itemClass}
+              type="button"
+              data-id={conversation.id}
+              onclick={handleSelect}
+            >
+              <span class="avatar" aria-hidden="true"
+                >{conversation.initials}</span
+              >
+              <span class="conv-main">
+                <span class="conv-top">
+                  <span class="conv-name">{conversation.name}</span>
+                  <span class="conv-time">{conversation.timeLabel}</span>
+                </span>
+                <span class="conv-preview">{conversation.preview}</span>
+              </span>
+              <template lwc:if={conversation.hasUnread}>
+                <span class="unread-badge">{conversation.unreadLabel}</span>
+              </template>
+            </button>
+          </template>
+        </template>
+
+        <template lwc:if={showEmptyList}>
+          <div class="empty-list">
+            <lightning-icon
+              icon-name="utility:chat"
+              size="medium"
+            ></lightning-icon>
+            <p>No conversations in this filter.</p>
+          </div>
+        </template>
+      </div>
+    </aside>
+
+    <main class="main-pane">
+      <template lwc:if={hasSelection}>
+        <header class="main-header">
+          <div class="main-identity">
+            <div class="avatar large" aria-hidden="true">
+              {selectedInitials}
+            </div>
+            <div>
+              <div class="main-name">{selectedName}</div>
+              <div class="main-sub">
+                {selectedPhone} · {selectedStatus} · {selectedAssignedUser}
+              </div>
+            </div>
+          </div>
+          <div class="main-actions">
+            <lightning-button
+              label="Claim"
+              onclick={handleClaim}
+            ></lightning-button>
+            <lightning-button
+              label="Close"
+              variant="neutral"
+              onclick={handleClose}
+            ></lightning-button>
+          </div>
+        </header>
+
+        <template lwc:if={hasSelectedRecord}>
+          <div class="chat-host">
+            <c-whatsapp-chat
+              variant="inline"
+              record-id={selectedRecordId}
+              object-api-name={selectedObjectApiName}
+              key={selectedRecordId}
+            ></c-whatsapp-chat>
+          </div>
+        </template>
+        <template lwc:else>
+          <div class="empty-chat">
+            <lightning-icon
+              icon-name="utility:link"
+              size="large"
+            ></lightning-icon>
+            <h2>Not linked to a record</h2>
+            <p>
+              This WhatsApp conversation is not linked to a Lead, Contact,
+              Account, or Case yet. Link it from the record or ask an admin to
+              configure object mapping.
+            </p>
+          </div>
+        </template>
+      </template>
+
+      <template lwc:else>
+        <div class="empty-chat">
+          <lightning-icon
+            icon-name="utility:chat"
+            size="large"
+          ></lightning-icon>
+          <h2>Select a conversation</h2>
+          <p>Choose a conversation from the list to read and reply.</p>
+        </div>
+      </template>
+    </main>
+  </div>
+</template>

@@ -1,0 +1,290 @@
+:host {
+  display: block;
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue",
+    Arial, sans-serif;
+}
+
+.inbox-shell {
+  display: flex;
+  height: calc(100vh - 120px);
+  min-height: 560px;
+  overflow: hidden;
+  border: 1px solid #d8dde6;
+  border-radius: 8px;
+  background: #fff;
+}
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  width: 360px;
+  min-width: 280px;
+  border-right: 1px solid #d8dde6;
+  background: #f8f9f9;
+}
+
+.sidebar-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 14px 16px 10px;
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.sidebar-header h1 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: #032d60;
+}
+
+.sidebar-header p {
+  margin: 3px 0 0;
+  color: #667781;
+  font-size: 11px;
+}
+
+.search-row {
+  padding: 10px 12px 4px;
+}
+
+.filter-row {
+  display: flex;
+  gap: 6px;
+  padding: 4px 12px 10px;
+  overflow-x: auto;
+}
+
+.conversation-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0 6px 10px;
+}
+
+.conversation-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 10px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+}
+
+.conversation-item:hover {
+  background: #eef1f6;
+}
+
+.conversation-item.selected {
+  background: #e5f2fb;
+}
+
+.avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: #d8dde6;
+  color: #3b4a54;
+  font-size: 12px;
+  font-weight: 700;
+  flex: 0 0 auto;
+}
+
+.avatar.large {
+  width: 40px;
+  height: 40px;
+  background: #e1f2fb;
+  color: #075e54;
+}
+
+.conv-main {
+  min-width: 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.conv-top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.conv-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: #111b21;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.conv-time {
+  color: #8696a0;
+  font-size: 10px;
+  flex: 0 0 auto;
+}
+
+.conv-preview {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: #667781;
+  font-size: 11px;
+}
+
+.unread-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 9px;
+  background: #25d366;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  flex: 0 0 auto;
+}
+
+.loading {
+  position: relative;
+  min-height: 120px;
+}
+
+.empty-list {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 32px 16px;
+  color: #667781;
+  text-align: center;
+  font-size: 12px;
+}
+
+.error-banner {
+  margin: 0 12px 8px;
+  padding: 8px 10px;
+  border-radius: 6px;
+  background: #fef1ee;
+  color: #8e030f;
+  font-size: 11px;
+}
+
+.main-pane {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+  background: #efeae2;
+}
+
+.main-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 14px;
+  border-bottom: 1px solid #d8dde6;
+  background: #fff;
+}
+
+.main-identity {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.main-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 14px;
+  font-weight: 700;
+  color: #111b21;
+}
+
+.main-sub {
+  margin-top: 2px;
+  color: #667781;
+  font-size: 11px;
+}
+
+.main-actions {
+  display: flex;
+  gap: 6px;
+  flex: 0 0 auto;
+}
+
+.chat-host {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+}
+
+.chat-host c-whatsapp-chat {
+  flex: 1;
+  min-height: 0;
+}
+
+.empty-chat {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 32px;
+  color: #54656f;
+  text-align: center;
+}
+
+.empty-chat h2 {
+  margin: 4px 0 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #3b4a54;
+}
+
+.empty-chat p {
+  max-width: 420px;
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+@media (max-width: 720px) {
+  .inbox-shell {
+    height: calc(100vh - 80px);
+    flex-direction: column;
+  }
+
+  .sidebar {
+    width: 100%;
+    max-height: 45vh;
+    border-right: 0;
+    border-bottom: 1px solid #d8dde6;
+  }
+
+  .main-pane {
+    min-height: 0;
+  }
+
+  .main-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

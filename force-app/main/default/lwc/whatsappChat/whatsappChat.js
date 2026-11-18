@@ -10,6 +10,7 @@ const REFRESH_DEBOUNCE_MS = 400;
 export default class WhatsappChat extends LightningElement {
   @api recordId;
   @api objectApiName;
+  @api variant = "launcher";
 
   @track isOpen = false;
   @track isLoading = true;
@@ -215,6 +216,26 @@ export default class WhatsappChat extends LightningElement {
     }
   }
 
+  get isInline() {
+    return this.variant === "inline";
+  }
+
+  get showChat() {
+    return this.isInline || this.isOpen;
+  }
+
+  get showLauncher() {
+    return !this.isInline && !this.isOpen;
+  }
+
+  get showCloseButton() {
+    return !this.isInline;
+  }
+
+  get chatWindowClass() {
+    return this.isInline ? "chat-window inline" : "chat-window";
+  }
+
   get isWindowOpen() {
     return this.windowExpiresAt
       ? new Date(this.windowExpiresAt).getTime() > this.now
@@ -277,6 +298,9 @@ export default class WhatsappChat extends LightningElement {
   }
 
   toggleChat() {
+    if (this.isInline) {
+      return;
+    }
     this.isOpen = !this.isOpen;
     if (this.isOpen) {
       this.loadContext();

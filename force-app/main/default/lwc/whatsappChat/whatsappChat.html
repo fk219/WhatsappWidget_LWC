@@ -1,6 +1,6 @@
 <template>
-  <template lwc:if={isOpen}>
-    <section class="chat-window" aria-label="WhatsApp conversation">
+  <template lwc:if={showChat}>
+    <section class={chatWindowClass} aria-label="WhatsApp conversation">
       <header class="chat-header">
         <div class="avatar" aria-hidden="true">WA</div>
         <div class="identity">
@@ -24,6 +24,7 @@
             ></lightning-icon>
           </button>
           <button
+            lwc:if={showCloseButton}
             class="icon-button light"
             type="button"
             onclick={toggleChat}

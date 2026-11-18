@@ -67,6 +67,17 @@
   box-shadow: 0 16px 48px rgba(0, 0, 0, 0.28);
 }
 
+.chat-window.inline {
+  position: relative;
+  right: auto;
+  bottom: auto;
+  width: 100%;
+  height: 100%;
+  max-height: none;
+  border-radius: 0;
+  box-shadow: none;
+}
+
 .chat-header {
   display: flex;
   align-items: center;
