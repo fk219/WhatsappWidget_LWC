@@ -94,7 +94,36 @@ public without sharing class WhatsAppAdminController {
       [SELECT COUNT() FROM WhatsApp_Conversation__c]
     );
     result.put('messageCount', [SELECT COUNT() FROM WhatsApp_Message__c]);
+    result.put('defaultLeadOwner', settings.Default_Lead_Owner__c);
+    result.put('defaultCaseOwner', settings.Default_Case_Owner__c);
+    result.put('defaultCaseQueue', settings.Default_Case_Queue__c);
+    result.put('defaultQueue', settings.Default_Queue_Id__c);
+    result.put('caseRecordType', settings.Case_Record_Type_Id__c);
+    result.put('autoCreateLead', settings.Enable_Auto_Create_Lead__c);
+    result.put('autoCreateCase', settings.Auto_Create_Case__c);
     return result;
+  }
+
+  @AuraEnabled
+  public static void saveDefaults(
+    String defaultLeadOwner,
+    String defaultCaseOwner,
+    String defaultCaseQueue,
+    String defaultQueue,
+    String caseRecordType,
+    Boolean autoCreateLead,
+    Boolean autoCreateCase
+  ) {
+    assertAdmin();
+    WhatsApp_Settings__c settings = WhatsAppSettingsService.getSettings();
+    settings.Default_Lead_Owner__c = defaultLeadOwner;
+    settings.Default_Case_Owner__c = defaultCaseOwner;
+    settings.Default_Case_Queue__c = defaultCaseQueue;
+    settings.Default_Queue_Id__c = defaultQueue;
+    settings.Case_Record_Type_Id__c = caseRecordType;
+    settings.Enable_Auto_Create_Lead__c = autoCreateLead == true;
+    settings.Auto_Create_Case__c = autoCreateCase == true;
+    upsert settings;
   }
 
   @AuraEnabled(cacheable=true)

@@ -20,7 +20,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Core data model: profile, conversation, message, status, media, template, consent, mapping, routing rule, webhook event, API log, outbound queue, usage, conversation member.
 - Apex integration layer: Graph client, webhook verification/staging, async processor, phone matcher, outbound text service, chat controller, permission sets, tests.
 - `whatsappChat` LWC with SLDS styling, 24h window, consent badge, status ticks, Platform Events, and Jest tests.
-- `whatsappSetup` admin page for connection status, object/field mappings, routing rules, and diagnostics.
+- `whatsappSetup` admin page for connection status, object/field mappings, routing rules, record defaults, and diagnostics.
+- Client-configurable Lead/Case default fields on `WhatsApp_Settings__c` (owner, queue, record type, auto-create toggles).
 - `whatsappInbox` two-pane inbox with filters, search, unread badges, claim/close, and inline chat.
 - Remote Site Settings for Meta Graph API and media CDN.
 

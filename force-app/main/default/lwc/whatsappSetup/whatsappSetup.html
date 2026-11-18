@@ -118,6 +118,69 @@
               <span>{setup.templateCount}</span><label>Templates</label>
             </div>
           </div>
+
+          <div class="defaults">
+            <h3>Record defaults</h3>
+            <p class="muted">
+              These are client-controlled defaults. Use 18-character IDs from
+              the client's Salesforce org. The routing engine will use these
+              when it creates a Lead or Case.
+            </p>
+            <div class="form-grid">
+              <lightning-input
+                data-field="Default_Lead_Owner__c"
+                label="Default Lead owner ID"
+                value={defaultForm.Default_Lead_Owner__c}
+                onchange={handleDefaultsFieldChange}
+              ></lightning-input>
+              <lightning-input
+                data-field="Default_Case_Owner__c"
+                label="Default Case owner ID"
+                value={defaultForm.Default_Case_Owner__c}
+                onchange={handleDefaultsFieldChange}
+              ></lightning-input>
+              <lightning-input
+                data-field="Default_Case_Queue__c"
+                label="Default Case queue ID"
+                value={defaultForm.Default_Case_Queue__c}
+                onchange={handleDefaultsFieldChange}
+              ></lightning-input>
+              <lightning-input
+                data-field="Default_Queue_Id__c"
+                label="Default queue ID"
+                value={defaultForm.Default_Queue_Id__c}
+                onchange={handleDefaultsFieldChange}
+              ></lightning-input>
+              <lightning-input
+                data-field="Case_Record_Type_Id__c"
+                label="Case record type ID"
+                value={defaultForm.Case_Record_Type_Id__c}
+                onchange={handleDefaultsFieldChange}
+              ></lightning-input>
+              <lightning-input
+                data-field="Enable_Auto_Create_Lead__c"
+                type="checkbox"
+                label="Create a Lead when no record matches"
+                checked={defaultForm.Enable_Auto_Create_Lead__c}
+                onchange={handleDefaultsFieldChange}
+              ></lightning-input>
+              <lightning-input
+                data-field="Auto_Create_Case__c"
+                type="checkbox"
+                label="Create a Case for matched Contact/Account"
+                checked={defaultForm.Auto_Create_Case__c}
+                onchange={handleDefaultsFieldChange}
+              ></lightning-input>
+            </div>
+            <div class="form-actions">
+              <lightning-button
+                label="Save defaults"
+                variant="brand"
+                onclick={handleSaveDefaults}
+                disabled={isSaving}
+              ></lightning-button>
+            </div>
+          </div>
         </lightning-card>
       </lightning-tab>
 

@@ -11,6 +11,7 @@ import getRules from "@salesforce/apex/WhatsAppAdminController.getRules";
 import saveRule from "@salesforce/apex/WhatsAppAdminController.saveRule";
 import deleteRule from "@salesforce/apex/WhatsAppAdminController.deleteRule";
 import getDiagnostics from "@salesforce/apex/WhatsAppAdminController.getDiagnostics";
+import saveDefaults from "@salesforce/apex/WhatsAppAdminController.saveDefaults";
 
 const EMPTY_MAPPING = {
   Id: null,
@@ -42,6 +43,15 @@ const EMPTY_RULE = {
 
 export default class WhatsappSetup extends LightningElement {
   @track setup = {};
+  @track defaultForm = {
+    Default_Lead_Owner__c: "",
+    Default_Case_Owner__c: "",
+    Default_Case_Queue__c: "",
+    Default_Queue_Id__c: "",
+    Case_Record_Type_Id__c: "",
+    Enable_Auto_Create_Lead__c: false,
+    Auto_Create_Case__c: false
+  };
   @track objectOptions = [];
   @track fieldOptions = [];
   @track mappings = [];
@@ -68,6 +78,15 @@ export default class WhatsappSetup extends LightningElement {
         getRules()
       ]);
       this.setup = setup || {};
+      this.defaultForm = {
+        Default_Lead_Owner__c: setup?.defaultLeadOwner || "",
+        Default_Case_Owner__c: setup?.defaultCaseOwner || "",
+        Default_Case_Queue__c: setup?.defaultCaseQueue || "",
+        Default_Queue_Id__c: setup?.defaultQueue || "",
+        Case_Record_Type_Id__c: setup?.caseRecordType || "",
+        Enable_Auto_Create_Lead__c: setup?.autoCreateLead === true,
+        Auto_Create_Case__c: setup?.autoCreateCase === true
+      };
       this.objectOptions = objectOptions || [];
       this.mappings = mappings || [];
       this.rules = rules || [];
@@ -358,6 +377,42 @@ export default class WhatsappSetup extends LightningElement {
       this.rules = (await getRules()) || [];
     } catch (error) {
       this.showToast("Error", this.getErrorMessage(error), "error");
+    }
+  }
+
+  handleDefaultsFieldChange(event) {
+    const field = event.target.dataset.field;
+    if (!field) {
+      return;
+    }
+    const value =
+      event.target.type === "checkbox"
+        ? event.target.checked
+        : event.target.value;
+    this.defaultForm = { ...this.defaultForm, [field]: value };
+  }
+
+  async handleSaveDefaults() {
+    if (this.isSaving) {
+      return;
+    }
+    this.isSaving = true;
+    try {
+      await saveDefaults({
+        defaultLeadOwner: this.defaultForm.Default_Lead_Owner__c,
+        defaultCaseOwner: this.defaultForm.Default_Case_Owner__c,
+        defaultCaseQueue: this.defaultForm.Default_Case_Queue__c,
+        defaultQueue: this.defaultForm.Default_Queue_Id__c,
+        caseRecordType: this.defaultForm.Case_Record_Type_Id__c,
+        autoCreateLead: this.defaultForm.Enable_Auto_Create_Lead__c,
+        autoCreateCase: this.defaultForm.Auto_Create_Case__c
+      });
+      this.showToast("Success", "Record defaults saved.", "success");
+      this.setup = (await getSetupState()) || {};
+    } catch (error) {
+      this.showToast("Error", this.getErrorMessage(error), "error");
+    } finally {
+      this.isSaving = false;
     }
   }
 
