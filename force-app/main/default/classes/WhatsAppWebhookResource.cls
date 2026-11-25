@@ -76,7 +76,7 @@ global without sharing class WhatsAppWebhookResource {
       'sha256=' + EncodingUtil.convertToHex(expectedMac);
     if (
       String.isBlank(signature) ||
-      !signature.equalsIgnoreCase(expectedSignature)
+      !timingSafeEquals(signature.toLowerCase(), expectedSignature.toLowerCase())
     ) {
       response.statusCode = 401;
       response.responseBody = Blob.valueOf('{"error":"invalid signature"}');
@@ -181,6 +181,23 @@ global without sharing class WhatsAppWebhookResource {
 
     response.statusCode = failed ? 500 : 200;
     response.responseBody = Blob.valueOf('{"received":true}');
+  }
+
+  /**
+   * Non-short-circuit comparison for the webhook signature. Apex has no
+   * MessageDigest.isEqual equivalent; the bitwise `&` keeps the per-character
+   * comparison from breaking on the first mismatch.
+   */
+  private static Boolean timingSafeEquals(String left, String right) {
+    if (left == null || right == null) {
+      return false;
+    }
+    Boolean match = left.length() == right.length();
+    Integer length = Math.min(left.length(), right.length());
+    for (Integer i = 0; i < length; i++) {
+      match = match & (left.substring(i, i + 1) == right.substring(i, i + 1));
+    }
+    return match;
   }
 
   private static String truncate(String value, Integer maxLength) {
